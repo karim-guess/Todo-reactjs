@@ -10,9 +10,10 @@ type Todo = {
 
 type Props = {
     todo: Todo;
+    onDelete: () => void;    
 }
 
-const Todoitem = ({ todo } : Props) => {
+const Todoitem = ({ todo, onDelete } : Props) => {
  
   return (
     <li className="p-3">
@@ -29,8 +30,8 @@ const Todoitem = ({ todo } : Props) => {
                 {todo.priority }
              </span>
           </div>
-         <button className='btn btn-sm btn-error btn-soft '>
-            <Trash className='w-4 h-4' />
+         <button className='btn btn-sm btn-error btn-soft ' onClick={onDelete} >
+            <Trash  className='w-4 h-4'  />
          </button>
       </div>
     </li>

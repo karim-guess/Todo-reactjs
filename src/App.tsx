@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Todoitem from "./Todoitem";
+import { Construction } from "lucide-react";
 
 
 type Priority = 'Urgente' | 'Moyenne' | 'Petite';
@@ -52,6 +53,15 @@ if (filter === "Tous") {
   filteredTodos = todos.filter(todo => todo.priority === filter);
 }
 
+const urgenteCount = todos.filter(todo => todo.priority === "Urgente").length;
+const MoyenneCount = todos.filter(todo => todo.priority === "Moyenne").length;
+const PetiteCount = todos.filter(todo => todo.priority === "Petite").length;
+const totalCount = todos.length;
+
+function handleDelete(id: number) {
+  const newTodos = todos.filter(todo => todo.id !== id);
+  setTodos(newTodos);
+}
 
   return (
     
@@ -83,7 +93,22 @@ onChange={(e) => setPriority(e.target.value as Priority)}
               <div className="flex flex-wrap gap-4">
                     <button className={`btn btn-soft ${filter === "Tous" ? "btn-primary" : ""}`} onClick={() => setFilter("Tous")}   
                     >
-                      Tous  
+                      Tous ({totalCount})  
+                    </button>
+
+                    <button className={`btn btn-soft ${filter === "Urgente" ? "btn-primary" : ""}`} onClick={() => setFilter("Urgente")}   
+                    >
+                      Urgente ({urgenteCount})  
+                    </button>
+
+                    <button className={`btn btn-soft ${filter === "Moyenne" ? "btn-primary" : ""}`} onClick={() => setFilter("Moyenne")}   
+                    >
+                      Moyenne ({MoyenneCount})  
+                    </button>
+
+                    <button className={`btn btn-soft ${filter === "Tous" ? "btn-primary" : ""}`} onClick={() => setFilter("Petite")}   
+                    >
+                      Petite ({PetiteCount})  
                     </button>
 
               </div>
@@ -94,14 +119,20 @@ onChange={(e) => setPriority(e.target.value as Priority)}
               {filteredTodos.map((todo) => (
                  
                  <li key={todo.id} >
-                 < Todoitem todo={todo} />
+                 < Todoitem 
+                   todo={todo}
+                   onDelete={()=>handleDelete(todo.id)}
+                   />
                   </li>
               ))}
 
                 
               </ul>
               ) : ( 
-                <div>test 2</div>
+                <div className="flex justify-center items-center flex-col p-5">
+                  <Construction className="w-40 h-40 text-primary"/>
+                  <p className="text-sm">Aucune tache pour ce filtre</p>
+                </div>
             )}
 
             </div>
