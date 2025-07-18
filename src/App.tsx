@@ -63,6 +63,33 @@ function handleDelete(id: number) {
   setTodos(newTodos);
 }
 
+const [selectedTodos, setSelectedTodos] = useState<Set<number>>(new Set());
+
+
+function toggleSelectTodo(id: number) {
+const newSelected = new Set(selectedTodos)
+if (newSelected.has(id)) {
+    newSelected.delete(id);
+  } else {
+    newSelected.add(id);
+
+}
+  setSelectedTodos(newSelected);
+}
+
+function finishSelected() {
+  const newTodos = todos.filter((todo) => {
+    if (selectedTodos.has(todo.id)) {
+      return false; 
+    } else {
+      return true; 
+    }
+  });
+  setTodos(newTodos);
+  setSelectedTodos(new Set());
+  
+}
+
   return (
     
       <div className="flex justify-center" >
@@ -90,7 +117,8 @@ onChange={(e) => setPriority(e.target.value as Priority)}
         </div> 
 
             <div className="space-y-2 flex-1 h-fit" >
-              <div className="flex flex-wrap gap-4">
+              <div className="flex justify-between items-center mb-4">
+                <div className="flex flex-wrap gap-4">
                     <button className={`btn btn-soft ${filter === "Tous" ? "btn-primary" : ""}`} onClick={() => setFilter("Tous")}   
                     >
                       Tous ({totalCount})  
@@ -106,11 +134,19 @@ onChange={(e) => setPriority(e.target.value as Priority)}
                       Moyenne ({MoyenneCount})  
                     </button>
 
-                    <button className={`btn btn-soft ${filter === "Tous" ? "btn-primary" : ""}`} onClick={() => setFilter("Petite")}   
+                    <button className={`btn btn-soft ${filter === "Tous" ? "btn-primary" : ""}`} onClick={() => setFilter("Petite")}
+
                     >
                       Petite ({PetiteCount})  
                     </button>
+             
+              
+              </div>
 
+              <button onClick={finishSelected} className="btn btn-primary" 
+              disabled={selectedTodos.size == 0}>
+                Finir la selection ({selectedTodos.size})
+              </button>
               </div>
 
             {filteredTodos.length > 0 ? (
@@ -121,8 +157,11 @@ onChange={(e) => setPriority(e.target.value as Priority)}
                  <li key={todo.id} >
                  < Todoitem 
                    todo={todo}
+                   isSelected={selectedTodos.has(todo.id)}
                    onDelete={()=>handleDelete(todo.id)}
-                   />
+                   onToggleSelect={() => toggleSelectTodo(todo.id)}
+                  
+                  />
                   </li>
               ))}
 
